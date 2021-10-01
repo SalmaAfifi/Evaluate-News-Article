@@ -9,7 +9,11 @@ function handleSubmit(event) {
     fetch(`http://localhost:8081/test/${formText}`)
     .then(res => res.json())
     .then(function(res) {
-        document.getElementById('results').innerHTML = res.message
+        var result = ""
+        for (const [key, value] of Object.entries(res)) {
+            result += `${key}: ${value} <br>`
+          }
+        document.getElementById('results').innerHTML = result
     })
     }
     else {

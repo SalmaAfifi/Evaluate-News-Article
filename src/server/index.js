@@ -23,27 +23,21 @@ app.get('/', function (req, res) {
 });
 
 
-// a route that handling post request for new URL that coming from the frontend
-/* TODO:
-    1. GET the url from the request body
-    2. Build the URL it should be something like `${BASE_API_URL}?key=${MEAN_CLOUD_API_KEY}&url=${req.body.url}&lang=en`
-    3. Fetch Data from API
-    4. Send it to the client
-    5. REMOVE THIS TODO AFTER DOING IT 😎😎
-    server sends only specified data to the client with below codes
-     const sample = {
-       text: '',
-       score_tag : '',
-       agreement : '',
-       subjectivity : '',
-       confidence : '',
-       irony : ''
-     }
-*/
 
-app.get('/test/*', function (req, res) {
-    res.send(mockAPIResponse)
-})
+app.get('/test/*', async (req, res) => {
+    try{
+    const url = req.params[0];
+    const BASE_API_URL = "https://api.meaningcloud.com/sentiment-2.1"
+    const API_KEY = process.env.API_KEY
+    const apiRes = await axios.get(`${BASE_API_URL}?key=${API_KEY}&url=${url}&lang=en`);
+    const {text, score_tag, agreement, subjectivity, confidence, irony} = apiRes.data
+
+    res.send({score_tag, agreement, subjectivity, confidence, irony})} 
+    catch (err) {
+        console.log(err);
+        res.status(500);
+    }
+});
 
 // designates what port the app will listen to for incoming requests
 app.listen(PORT, (error) => {
